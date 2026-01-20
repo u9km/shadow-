@@ -1,58 +1,23 @@
-name: Sovereign Security Build V41
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
-
+name: build_sovereign_v41_final
+on: [push]
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Install Dependencies
-        run: |
-          # تثبيت dpkg ضروري جداً لحل خطأ dm.pl وتجميع ملف الـ deb
-          brew install ldid dpkg 
-
+      - uses: actions/checkout@v4
       - name: Setup Theos
-        run: |
-          git clone https://github.com/theos/theos.git ~/theos
-          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
-
-      - name: Setup iOS SDK
-        run: |
-          rm -rf ~/theos/sdks
-          git clone --depth 1 https://github.com/theos/sdks.git ~/theos/sdks
-          echo "SYSROOT=$HOME/theos/sdks/iPhoneOS14.5.sdk" >> $GITHUB_ENV
-
-      - name: Auto-Fix Project Structure
-        run: |
-          # تنظيم المجلدات بناءً على ملفاتك المرفوعة
-          mkdir -p 防禁令
-          mv Mithril-mm Mithril.mm 2>/dev/null || true
-          mv 1-h 1.h 2>/dev/null || true
-          mv 2-h 2.h 2>/dev/null || true
-          mv fishhook-c fishhook.c 2>/dev/null || true
-          mv fishhook-h fishhook.h 2>/dev/null || true
-          mv 循环删ano-mm8 循环删ano.mm 2>/dev/null || true
-          
-          # [span_3](start_span)نقل ملفات البرمجة للمجلد الصحيح ليتعرف عليها الـ Makefile[span_3](end_span)
-          mv Mithril.mm 防禁令/ 2>/dev/null || true
-          mv 循环删ano.mm 防禁令/ 2>/dev/null || true
-
-      - name: Build Tweak Package
+        run: git clone --recursive https://github.com/theos/theos.git ~/theos
+      - name: Install Dependencies
+        run: brew install ldid # حل مشكلة command not found
+      - name: Build Sovereign V41
         run: |
           export THEOS=~/theos
-          make clean
-          # [span_4](start_span)تجميع الحزمة النهائية[span_4](end_span)
-          make package FINALPACKAGE=1 DEBUG=0
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
+          make package
+      - name: Upload Sovereign Artifacts
+        uses: actions/upload-artifact@v4 # حل مشكلة deprecated version
         with:
-          name: SovereignSecurity_V41_Package
-          path: packages/*.deb
+          name: SovereignV41-Full-Package
+          path: |
+            packages/*.deb
+            .theos/obj/debug/*.dylib
+            .theos/obj/*.dylib
