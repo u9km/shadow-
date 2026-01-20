@@ -1,6 +1,5 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <substrate.h>
 #import <objc/runtime.h>
 #import <mach/mach.h>
 #import <sys/utsname.h>
