@@ -10,7 +10,7 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = SovereignSecurity
 
 # استدعاء كافة الملفات البرمجية بالأسماء الجديدة
-SovereignSecurity_FILES = fishhook.c Mithril.mm SovereignCleanup.mm
+SovereignSecurity_FILES = fishhook.c Mithril.mm 
 SovereignSecurity_FRAMEWORKS = UIKit Foundation Security CoreGraphics QuartzCore
 # إعدادات لمنع الكراش وتحسين الأداء
 SovereignSecurity_CFLAGS = -fobjc-arc -O3 -Wno-deprecated-declarations
